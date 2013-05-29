@@ -1,0 +1,82 @@
+<p>This method allows apps/services to find users that match with query params. Only return info in concordace with their scopes.</p>
+
+<h3 id='request'>Request</h3>
+
+<h4 id='headers'>Headers</h4>
+
+<ul>
+<li>Authentication: Basic Auth HTTP App/Srv credentials</li>
+
+<li>Token-Access-Scopes: App/Srv scopes</li>
+</ul>
+
+<h4 id='query_params'>Query Params</h4>
+
+<ul>
+<li>phonenumber</li>
+
+<li>email</li>
+
+<li>facebookid</li>
+
+<li>others&#8230;</li>
+</ul>
+
+<h3 id='response'>Response</h3>
+
+<p>Sends back a collection of users even with length 0.</p>
+
+<h3 id='raw'>RAW</h3>
+
+<h4 id='request'>Request</h4>
+
+<p><code>GET http://test-server:8000/users/?email=user@tdaf.com HTTP/1.1
+Host: test-server:8000
+Accept: application/json
+Proxy-Connection: keep-alive
+Authorization: Basic cHJ1ZWJhOnBydWViYQ==
+Content-length: 0
+</code></p>
+
+<h4 id='response'>Response</h4>
+
+<p><code>HTTP/1.0 200 OK
+ Server: WSGIServer/0.1 Python/2.7.2
+ Content-Type: application/json
+ {
+     &quot;limit&quot;: 5,
+     &quot;offset&quot;: 0,
+     &quot;total&quot;: 1,
+     &quot;users&quot;: [
+         {
+             &quot;userId&quot;: &quot;447&quot;,
+             &quot;accountStatus&quot;: 1,
+             &quot;creationTime&quot;: &quot;2012-11-05T09:37:59.831Z&quot;,
+             &quot;hasPassword&quot;: true,
+             &quot;identifiers&quot;:{
+	             &quot;phones&quot;: [
+	                 {
+	                     &quot;verified&quot;: true,
+	                     &quot;verificationTime&quot;: &quot;2012-09-29T12:01:00.000Z&quot;,
+	                     &quot;msisdn&quot;: &quot;34600000000&quot;,
+	                     &quot;creationTime&quot;: &quot;2012-09-29T12:00:00.000Z&quot;,
+	                     &quot;operator&quot;: &quot;21407&quot;,
+	                     &quot;main&quot;: true
+	                 }
+	             ],
+	             &quot;emails&quot;: [
+	                 {
+	                     &quot;creationTime&quot;: &quot;2012-09-29T12:05:00.000Z&quot;,
+	                     &quot;main&quot;: true,
+	                     &quot;verified&quot;: true,
+	                     &quot;verificationTime&quot;: &quot;2012-09-29T12:06:00.000Z&quot;,
+	                     &quot;address&quot;: &quot;user@tdaf.com&quot;
+	                 }
+	             ]
+	         }
+         }
+     ]
+}
+</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>Unica Error Codes</a>.</p>

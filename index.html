@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<head>
+  <title>TDAF IDP REST API</title>
+  <meta charset='utf-8'/>
+  <meta name='description' content='Documentation website'/>
+  <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'/>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+  <link href='assets.css' rel='stylesheet' type='text/css'>
+</head>
+<body>  
+  <nav id='sidebar'>
+	<h1>TDAF IDP REST API</h1>
+<ul id='links'>
+  
+    
+    <li><a href='#introduction'>Introduction</a></li>
+    
+  
+    
+    <li><a href='#datamodel'>Datamodel</a></li>
+    
+  
+    
+    <li><a href='#authentication'>Authenticate</a></li>
+    
+  
+    
+    <li><a href='#errorCodes'>Error Codes</a></li>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+  <li><h2>Providers</h2>
+    <ul>
+    
+      
+    
+              
+        <li class='GET'><a href='#getProviders'>Find Providers</a></li>
+              
+        <li class='POST'><a href='#createProvider'>Create new provider</a></li>
+              
+        <li class='GET'><a href='#getProviderData'>Get Provider Data</a></li>
+              
+        <li class='POST'><a href='#modifyProvider'>Modify provider data</a></li>
+              
+        <li class='DELETE'><a href='#deleteProvider'>Delete provider</a></li>
+      
+    
+    </ul>
+  </li>
+
+  <li><h2>Users</h2>
+    <ul>
+    
+      
+    
+              
+        <li class='POST'><a href='#userAuthenticate'>User Authenticate</a></li>
+              
+        <li class='POST'><a href='#userChangePassword'>User change password</a></li>
+              
+        <li class='POST'><a href='#userValidate'>User validate</a></li>
+              
+        <li class='POST'><a href='#createUser'>Create new user</a></li>
+              
+        <li class='GET'><a href='#getUsers'>Find Users</a></li>
+              
+        <li class='POST'><a href='#createUser'>Create new user</a></li>
+              
+        <li class='GET'><a href='#getUserData'>Get User Data</a></li>
+              
+        <li class='POST'><a href='#modifyUserData'>Modify user data</a></li>
+              
+        <li class='DELETE'><a href='#deleteUser'>Delete user</a></li>
+              
+        <li class='POST'><a href='#2-resetPasswordUser'>Reset user password</a></li>
+              
+        <li class='POST'><a href='#1-changePasswordUser'>Change user password</a></li>
+              
+        <li class='GET'><a href='#getUserIdentifiers'>Get user identifiers group</a></li>
+              
+        <li class='POST'><a href='#1-createUserIdentifier'>Create user identifier</a></li>
+              
+        <li class='DELETE'><a href='#deleteUserIdentifiers'>Delete user identifiers group</a></li>
+              
+        <li class='GET'><a href='#getUserIdentifier'>Get user identifier data</a></li>
+              
+        <li class='POST'><a href='#modifyUserIdentifier'>Modify user identifier data</a></li>
+              
+        <li class='DELETE'><a href='#deleteUserIdentifier'>Delete user identifier</a></li>
+              
+        <li class='POST'><a href='#sendValidationUserIdentifier'>Resend validation code from current identifier</a></li>
+              
+        <li class='DELETE'><a href='#validateUserIdentifier'>Validate current identifier</a></li>
+      
+    
+    </ul>
+  </li>
+
+</ul>
+</nav>
+
+<section id='content'>
+
+  <article class=''>
+    <a name='introduction' href='#introduction'><h2>Introduction</h2></a>
+    <section class='body'>
+      <h3 id='idp_identity_provider'>IDP: Identity provider</h3>
+
+<p>The goal is to provide and IDP facilities as PaaS. Different providers can create their own IDP, with their own users.</p>
+
+<ul>
+<li>More info: <a href='http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html'>IDP SPEC</a>.</li>
+</ul>
+    </section>
+  </article>
+
+  <article class=''>
+    <a name='datamodel' href='#datamodel'><h2>Datamodel</h2></a>
+    <section class='body'>
+      <p><code>user
+    userId: UUID
+    password: pbkdf2_sha256
+    hashPassword : true|false
+    status : int (NOT_CONFIRMED : 0, ACTIVE : 1, ¿BLOCKED : 2?, PENDING_FOR_REMOVAL : 3)
+    identifiers:
+        phoneNumbers: []
+            msisdn: msisdn
+            verified: true|false
+            verificationTime.    timestamp
+            main: true|false
+            operator: string
+            resetPasswordCode: string
+            resetPasswordCodeTime: string
+        emails: []
+            address: email
+            verified: true|false
+            verificationTime: timestamp
+            main: true|false
+            resetPasswordCode: string
+            resetPasswordCodeTime: string
+    externalIdentifiers:
+        facebook:
+            facebookId:
+        twitter:
+            twitterId:
+    systemIdentifiers:
+        TUCORE:
+            tuCoreId:
+</code> More info <a href='http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html'>Datamodel SPEC</a>.</p>
+    </section>
+  </article>
+
+  <article class=''>
+    <a name='authentication' href='#authentication'><h2>Authenticate</h2></a>
+    <section class='body'>
+      <p>This method allows users to retrieve stuff.</p>
+
+<h3 id='response'>Response</h3>
+
+<p>Sends back a collection of things.</p>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    id: thing_2,
+    name: &#39;My second thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class=''>
+    <a name='errorCodes' href='#errorCodes'><h2>Error Codes</h2></a>
+    <section class='body'>
+      <p>For errors responses, see the <a href='#response-status-codes'>Unica Error Codes</a>.</p>
+    </section>
+  </article>
+
+  <article class='POST'>
+    <a name='userAuthenticate' href='#userAuthenticate'><h2><code><b>POST</b> /providerid/users/authenticate</code> User Authenticate</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='POST'>
+    <a name='userChangePassword' href='#userChangePassword'><h2><code><b>POST</b> /providerid/users/changepassword</code> User change password</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='POST'>
+    <a name='userValidate' href='#userValidate'><h2><code><b>POST</b> /providerid/users/validate/</code> User validate</h2></a>
+    <section class='body'>
+      <p>This method allows apps/services to find users that match with query params. Only return info in concordace with their scopes.</p>
+
+<h3 id='request'>Request</h3>
+
+<h4 id='headers'>Headers</h4>
+
+<ul>
+<li>Authentication: Basic Auth HTTP App/Srv credentials</li>
+
+<li>Token-Access-Scopes: App/Srv scopes</li>
+</ul>
+
+<h4 id='query_params'>Query Params</h4>
+
+<ul>
+<li>phonenumber</li>
+
+<li>email</li>
+
+<li>facebookid</li>
+
+<li>others&#8230;</li>
+</ul>
+
+<h3 id='response'>Response</h3>
+
+<p>Sends back a collection of users even with length 0.</p>
+
+<h3 id='raw'>RAW</h3>
+
+<h4 id='request'>Request</h4>
+
+<p><code>GET http://test-server:8000/users/?email=user@tdaf.com HTTP/1.1
+Host: test-server:8000
+Accept: application/json
+Proxy-Connection: keep-alive
+Authorization: Basic cHJ1ZWJhOnBydWViYQ==
+Content-length: 0
+</code></p>
+
+<h4 id='response'>Response</h4>
+
+<p><code>HTTP/1.0 200 OK
+ Server: WSGIServer/0.1 Python/2.7.2
+ Content-Type: application/json
+ {
+     &quot;limit&quot;: 5,
+     &quot;offset&quot;: 0,
+     &quot;total&quot;: 1,
+     &quot;users&quot;: [
+         {
+             &quot;userId&quot;: &quot;447&quot;,
+             &quot;accountStatus&quot;: 1,
+             &quot;creationTime&quot;: &quot;2012-11-05T09:37:59.831Z&quot;,
+             &quot;hasPassword&quot;: true,
+             &quot;identifiers&quot;:{
+	             &quot;phones&quot;: [
+	                 {
+	                     &quot;verified&quot;: true,
+	                     &quot;verificationTime&quot;: &quot;2012-09-29T12:01:00.000Z&quot;,
+	                     &quot;msisdn&quot;: &quot;34600000000&quot;,
+	                     &quot;creationTime&quot;: &quot;2012-09-29T12:00:00.000Z&quot;,
+	                     &quot;operator&quot;: &quot;21407&quot;,
+	                     &quot;main&quot;: true
+	                 }
+	             ],
+	             &quot;emails&quot;: [
+	                 {
+	                     &quot;creationTime&quot;: &quot;2012-09-29T12:05:00.000Z&quot;,
+	                     &quot;main&quot;: true,
+	                     &quot;verified&quot;: true,
+	                     &quot;verificationTime&quot;: &quot;2012-09-29T12:06:00.000Z&quot;,
+	                     &quot;address&quot;: &quot;user@tdaf.com&quot;
+	                 }
+	             ]
+	         }
+         }
+     ]
+}
+</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>Unica Error Codes</a>.</p>
+    </section>
+  </article>
+
+  <article class='POST'>
+    <a name='createUser' href='#createUser'><h2><code><b>POST</b> /providerid/users/</code> Create new user</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='GET'>
+    <a name='getUsers' href='#getUsers'><h2><code><b>GET</b> /providerid/users/</code> Find Users</h2></a>
+    <section class='body'>
+      <p>This method allows apps/services to find users that match with query params. Only return info in concordace with their scopes.</p>
+
+<h3 id='request'>Request</h3>
+
+<h4 id='headers'>Headers</h4>
+
+<ul>
+<li>Authentication: Basic Auth HTTP App/Srv credentials</li>
+
+<li>Token-Access-Scopes: App/Srv scopes</li>
+</ul>
+
+<h4 id='query_params'>Query Params</h4>
+
+<ul>
+<li>phonenumber</li>
+
+<li>email</li>
+
+<li>facebookid</li>
+
+<li>others&#8230;</li>
+</ul>
+
+<h3 id='response'>Response</h3>
+
+<p>Sends back a collection of users even with length 0.</p>
+
+<h3 id='raw'>RAW</h3>
+
+<h4 id='request'>Request</h4>
+
+<p><code>GET http://test-server:8000/users/?email=user@tdaf.com HTTP/1.1
+Host: test-server:8000
+Accept: application/json
+Proxy-Connection: keep-alive
+Authorization: Basic cHJ1ZWJhOnBydWViYQ==
+Content-length: 0
+</code></p>
+
+<h4 id='response'>Response</h4>
+
+<p><code>HTTP/1.0 200 OK
+ Server: WSGIServer/0.1 Python/2.7.2
+ Content-Type: application/json
+ {
+     &quot;limit&quot;: 5,
+     &quot;offset&quot;: 0,
+     &quot;total&quot;: 1,
+     &quot;users&quot;: [
+         {
+             &quot;userId&quot;: &quot;447&quot;,
+             &quot;accountStatus&quot;: 1,
+             &quot;creationTime&quot;: &quot;2012-11-05T09:37:59.831Z&quot;,
+             &quot;hasPassword&quot;: true,
+             &quot;identifiers&quot;:{
+	             &quot;phones&quot;: [
+	                 {
+	                     &quot;verified&quot;: true,
+	                     &quot;verificationTime&quot;: &quot;2012-09-29T12:01:00.000Z&quot;,
+	                     &quot;msisdn&quot;: &quot;34600000000&quot;,
+	                     &quot;creationTime&quot;: &quot;2012-09-29T12:00:00.000Z&quot;,
+	                     &quot;operator&quot;: &quot;21407&quot;,
+	                     &quot;main&quot;: true
+	                 }
+	             ],
+	             &quot;emails&quot;: [
+	                 {
+	                     &quot;creationTime&quot;: &quot;2012-09-29T12:05:00.000Z&quot;,
+	                     &quot;main&quot;: true,
+	                     &quot;verified&quot;: true,
+	                     &quot;verificationTime&quot;: &quot;2012-09-29T12:06:00.000Z&quot;,
+	                     &quot;address&quot;: &quot;user@tdaf.com&quot;
+	                 }
+	             ]
+	         }
+         }
+     ]
+}
+</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>Unica Error Codes</a>.</p>
+    </section>
+  </article>
+
+  <article class='POST'>
+    <a name='createUser' href='#createUser'><h2><code><b>POST</b> /providerid/users/</code> Create new user</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='GET'>
+    <a name='getUserData' href='#getUserData'><h2><code><b>GET</b> /providerid/users/{userid}/</code> Get User Data</h2></a>
+    <section class='body'>
+      <p>This method allows apps/services to find users that match with query params. Only return info in concordace with their scopes.</p>
+
+<h3 id='request'>Request</h3>
+
+<h4 id='headers'>Headers</h4>
+
+<ul>
+<li>Authentication: Basic Auth HTTP App/Srv credentials</li>
+
+<li>Token-Access-Scopes: App/Srv scopes</li>
+</ul>
+
+<h4 id='query_params'>Query Params</h4>
+
+<ul>
+<li>phonenumber</li>
+
+<li>email</li>
+
+<li>facebookid</li>
+
+<li>others&#8230;</li>
+</ul>
+
+<h3 id='response'>Response</h3>
+
+<p>Sends back a collection of users even with length 0.</p>
+
+<h3 id='raw'>RAW</h3>
+
+<h4 id='request'>Request</h4>
+
+<p><code>GET http://test-server:8000/users/?email=user@tdaf.com HTTP/1.1
+Host: test-server:8000
+Accept: application/json
+Proxy-Connection: keep-alive
+Authorization: Basic cHJ1ZWJhOnBydWViYQ==
+Content-length: 0
+</code></p>
+
+<h4 id='response'>Response</h4>
+
+<p><code>HTTP/1.0 200 OK
+ Server: WSGIServer/0.1 Python/2.7.2
+ Content-Type: application/json
+ {
+     &quot;limit&quot;: 5,
+     &quot;offset&quot;: 0,
+     &quot;total&quot;: 1,
+     &quot;users&quot;: [
+         {
+             &quot;userId&quot;: &quot;447&quot;,
+             &quot;accountStatus&quot;: 1,
+             &quot;creationTime&quot;: &quot;2012-11-05T09:37:59.831Z&quot;,
+             &quot;hasPassword&quot;: true,
+             &quot;identifiers&quot;:{
+	             &quot;phones&quot;: [
+	                 {
+	                     &quot;verified&quot;: true,
+	                     &quot;verificationTime&quot;: &quot;2012-09-29T12:01:00.000Z&quot;,
+	                     &quot;msisdn&quot;: &quot;34600000000&quot;,
+	                     &quot;creationTime&quot;: &quot;2012-09-29T12:00:00.000Z&quot;,
+	                     &quot;operator&quot;: &quot;21407&quot;,
+	                     &quot;main&quot;: true
+	                 }
+	             ],
+	             &quot;emails&quot;: [
+	                 {
+	                     &quot;creationTime&quot;: &quot;2012-09-29T12:05:00.000Z&quot;,
+	                     &quot;main&quot;: true,
+	                     &quot;verified&quot;: true,
+	                     &quot;verificationTime&quot;: &quot;2012-09-29T12:06:00.000Z&quot;,
+	                     &quot;address&quot;: &quot;user@tdaf.com&quot;
+	                 }
+	             ]
+	         }
+         }
+     ]
+}
+</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>Unica Error Codes</a>.</p>
+    </section>
+  </article>
+
+  <article class='POST'>
+    <a name='modifyUserData' href='#modifyUserData'><h2><code><b>POST</b> /providerid/users/{userid}/</code> Modify user data</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='DELETE'>
+    <a name='deleteUser' href='#deleteUser'><h2><code><b>DELETE</b> /providerid/users/{userid}/</code> Delete user</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='POST'>
+    <a name='2-resetPasswordUser' href='#2-resetPasswordUser'><h2><code><b>POST</b> /providerid/users/{userid}/resetpassword</code> Reset user password</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='POST'>
+    <a name='1-changePasswordUser' href='#1-changePasswordUser'><h2><code><b>POST</b> /providerid/users/{userid}/changepassword</code> Change user password</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='GET'>
+    <a name='getUserIdentifiers' href='#getUserIdentifiers'><h2><code><b>GET</b> /providerid/users/{userid}/{identifier}/</code> Get user identifiers group</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='POST'>
+    <a name='1-createUserIdentifier' href='#1-createUserIdentifier'><h2><code><b>POST</b> /providerid/users/{userid}/{identifier}/</code> Create user identifier</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='DELETE'>
+    <a name='deleteUserIdentifiers' href='#deleteUserIdentifiers'><h2><code><b>DELETE</b> /providerid/users/{userid}/{identifier}/</code> Delete user identifiers group</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='GET'>
+    <a name='getUserIdentifier' href='#getUserIdentifier'><h2><code><b>GET</b> /providerid/users/{userid}/{identifier}/{identifierid}/</code> Get user identifier data</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='POST'>
+    <a name='modifyUserIdentifier' href='#modifyUserIdentifier'><h2><code><b>POST</b> /providerid/users/{userid}/{identifier}/{identifierid}/</code> Modify user identifier data</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='DELETE'>
+    <a name='deleteUserIdentifier' href='#deleteUserIdentifier'><h2><code><b>DELETE</b> /providerid/users/{userid}/{identifier}/{identifierid}/</code> Delete user identifier</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='POST'>
+    <a name='sendValidationUserIdentifier' href='#sendValidationUserIdentifier'><h2><code><b>POST</b> /providerid/users/{userid}/{identifier}/{identifierid}/sendValidation</code> Resend validation code from current identifier</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='DELETE'>
+    <a name='validateUserIdentifier' href='#validateUserIdentifier'><h2><code><b>DELETE</b> /providerid/users/{userid}/{identifier}/{identifierid}/validate/</code> Validate current identifier</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='GET'>
+    <a name='getProviders' href='#getProviders'><h2><code><b>GET</b> /providers/</code> Find Providers</h2></a>
+    <section class='body'>
+      <p>This method allows apps/services to find users that match with query params. Only return info in concordace with their scopes.</p>
+
+<h3 id='request'>Request</h3>
+
+<h4 id='headers'>Headers</h4>
+
+<ul>
+<li>Authentication: Basic Auth HTTP App/Srv credentials</li>
+
+<li>Token-Access-Scopes: App/Srv scopes</li>
+</ul>
+
+<h4 id='query_params'>Query Params</h4>
+
+<ul>
+<li>phonenumber</li>
+
+<li>email</li>
+
+<li>facebookid</li>
+
+<li>others&#8230;</li>
+</ul>
+
+<h3 id='response'>Response</h3>
+
+<p>Sends back a collection of users even with length 0.</p>
+
+<h3 id='raw'>RAW</h3>
+
+<h4 id='request'>Request</h4>
+
+<p><code>GET http://test-server:8000/users/?email=user@tdaf.com HTTP/1.1
+Host: test-server:8000
+Accept: application/json
+Proxy-Connection: keep-alive
+Authorization: Basic cHJ1ZWJhOnBydWViYQ==
+Content-length: 0
+</code></p>
+
+<h4 id='response'>Response</h4>
+
+<p><code>HTTP/1.0 200 OK
+ Server: WSGIServer/0.1 Python/2.7.2
+ Content-Type: application/json
+ {
+     &quot;limit&quot;: 5,
+     &quot;offset&quot;: 0,
+     &quot;total&quot;: 1,
+     &quot;users&quot;: [
+         {
+             &quot;userId&quot;: &quot;447&quot;,
+             &quot;accountStatus&quot;: 1,
+             &quot;creationTime&quot;: &quot;2012-11-05T09:37:59.831Z&quot;,
+             &quot;hasPassword&quot;: true,
+             &quot;identifiers&quot;:{
+	             &quot;phones&quot;: [
+	                 {
+	                     &quot;verified&quot;: true,
+	                     &quot;verificationTime&quot;: &quot;2012-09-29T12:01:00.000Z&quot;,
+	                     &quot;msisdn&quot;: &quot;34600000000&quot;,
+	                     &quot;creationTime&quot;: &quot;2012-09-29T12:00:00.000Z&quot;,
+	                     &quot;operator&quot;: &quot;21407&quot;,
+	                     &quot;main&quot;: true
+	                 }
+	             ],
+	             &quot;emails&quot;: [
+	                 {
+	                     &quot;creationTime&quot;: &quot;2012-09-29T12:05:00.000Z&quot;,
+	                     &quot;main&quot;: true,
+	                     &quot;verified&quot;: true,
+	                     &quot;verificationTime&quot;: &quot;2012-09-29T12:06:00.000Z&quot;,
+	                     &quot;address&quot;: &quot;user@tdaf.com&quot;
+	                 }
+	             ]
+	         }
+         }
+     ]
+}
+</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>Unica Error Codes</a>.</p>
+    </section>
+  </article>
+
+  <article class='POST'>
+    <a name='createProvider' href='#createProvider'><h2><code><b>POST</b> /providers/</code> Create new provider</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='GET'>
+    <a name='getProviderData' href='#getProviderData'><h2><code><b>GET</b> /providers/{providerid}/</code> Get Provider Data</h2></a>
+    <section class='body'>
+      <p>This method allows apps/services to find users that match with query params. Only return info in concordace with their scopes.</p>
+
+<h3 id='request'>Request</h3>
+
+<h4 id='headers'>Headers</h4>
+
+<ul>
+<li>Authentication: Basic Auth HTTP App/Srv credentials</li>
+
+<li>Token-Access-Scopes: App/Srv scopes</li>
+</ul>
+
+<h4 id='query_params'>Query Params</h4>
+
+<ul>
+<li>phonenumber</li>
+
+<li>email</li>
+
+<li>facebookid</li>
+
+<li>others&#8230;</li>
+</ul>
+
+<h3 id='response'>Response</h3>
+
+<p>Sends back a collection of users even with length 0.</p>
+
+<h3 id='raw'>RAW</h3>
+
+<h4 id='request'>Request</h4>
+
+<p><code>GET http://test-server:8000/users/?email=user@tdaf.com HTTP/1.1
+Host: test-server:8000
+Accept: application/json
+Proxy-Connection: keep-alive
+Authorization: Basic cHJ1ZWJhOnBydWViYQ==
+Content-length: 0
+</code></p>
+
+<h4 id='response'>Response</h4>
+
+<p><code>HTTP/1.0 200 OK
+ Server: WSGIServer/0.1 Python/2.7.2
+ Content-Type: application/json
+ {
+     &quot;limit&quot;: 5,
+     &quot;offset&quot;: 0,
+     &quot;total&quot;: 1,
+     &quot;users&quot;: [
+         {
+             &quot;userId&quot;: &quot;447&quot;,
+             &quot;accountStatus&quot;: 1,
+             &quot;creationTime&quot;: &quot;2012-11-05T09:37:59.831Z&quot;,
+             &quot;hasPassword&quot;: true,
+             &quot;identifiers&quot;:{
+	             &quot;phones&quot;: [
+	                 {
+	                     &quot;verified&quot;: true,
+	                     &quot;verificationTime&quot;: &quot;2012-09-29T12:01:00.000Z&quot;,
+	                     &quot;msisdn&quot;: &quot;34600000000&quot;,
+	                     &quot;creationTime&quot;: &quot;2012-09-29T12:00:00.000Z&quot;,
+	                     &quot;operator&quot;: &quot;21407&quot;,
+	                     &quot;main&quot;: true
+	                 }
+	             ],
+	             &quot;emails&quot;: [
+	                 {
+	                     &quot;creationTime&quot;: &quot;2012-09-29T12:05:00.000Z&quot;,
+	                     &quot;main&quot;: true,
+	                     &quot;verified&quot;: true,
+	                     &quot;verificationTime&quot;: &quot;2012-09-29T12:06:00.000Z&quot;,
+	                     &quot;address&quot;: &quot;user@tdaf.com&quot;
+	                 }
+	             ]
+	         }
+         }
+     ]
+}
+</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>Unica Error Codes</a>.</p>
+    </section>
+  </article>
+
+  <article class='POST'>
+    <a name='modifyProvider' href='#modifyProvider'><h2><code><b>POST</b> /providers/{providerid}/</code> Modify provider data</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+  <article class='DELETE'>
+    <a name='deleteProvider' href='#deleteProvider'><h2><code><b>DELETE</b> /providers/{providerid}/</code> Delete provider</h2></a>
+    <section class='body'>
+      <p>This method allows users to create a new thing.</p>
+
+<h3 id='request'>Request</h3>
+
+<ul>
+<li>The headers must include a <strong>valid authentication token</strong>.</li>
+
+<li><strong>The body can&#8217;t be empty</strong> and must include at least the name attribute, a <code>string</code> that will be used as the name of the thing.</li>
+</ul>
+
+<p><code>Authentication: bearer TOKEN</code> <code>{
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<h3 id='response'>Response</h3>
+
+<p><strong>If succeeds</strong>, returns the created thing.</p>
+
+<p><code>Status: 201 Created</code> <code>{
+    id: new_thing,
+    name: &#39;My new thing&#39;
+}</code></p>
+
+<p>For errors responses, see the <a href='#response-status-codes'>response status codes documentation</a>.</p>
+    </section>
+  </article>
+
+</section>
+  
+  <!--[if lt IE 9]><script src='http://html5shim.googlecode.com/svn/trunk/html5.js'></script><![endif]-->
+  <script src='assets.js' type='text/javascript'></script>
+  <script>require('boot');</script>
+</body>
+</html>
